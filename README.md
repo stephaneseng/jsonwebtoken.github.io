@@ -1,5 +1,16 @@
 ## JWT.io
 
+This repository is a fork of https://github.com/jsonwebtoken/jsonwebtoken.github.io, which adds support for tokens sent in HTTP requests headers in the web extension.
+
+To do so, all "Authorization" and "Permission" HTTP request headers sent in a browser tab are now intercepted and examined to detect JWT tokens.  
+The detected tokens are then made accesible in the web extension popup, displayed by subdomain and by header name.
+
+For example, if, in the current tab, a request is sent to subdomain.domain.tld with an "Authorization" header containing a JWT token, the token will be accessible in the web extension popup:
+
+![web-extension-popup-request-headers.png](img/doc/web-extension-popup-request-headers.png)
+
+---
+
 <img src="https://cdn.auth0.com/blog/jwtio/jwtio.png"/>
 
 [![Build Status](https://travis-ci.org/jsonwebtoken/jsonwebtoken.github.io.png?branch=master)](https://travis-ci.org/jsonwebtoken/jsonwebtoken.github.io)

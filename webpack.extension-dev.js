@@ -7,7 +7,8 @@ module.exports = merge(common, {
   entry: {
     index: './src/extension/index.js',
     webstorage: './src/extension/injected/webstorage.js',
-    'check-install': './src/extension/content-scripts/check-install.js'
+    'check-install': './src/extension/content-scripts/check-install.js',
+    background: './src/extension/background.js'
   },
   output: {
     filename: '[name].js',

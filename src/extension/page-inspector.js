@@ -2,6 +2,7 @@ import { isToken } from '../editor/jwt.js'
 import { getTokenEditorValue, setTokenEditorValue } from '../editor';
 import { 
   cookiesOptGroup,
+  requestHeadersOptGroup,
   webStorageOptGroup,
   saveBackElement,
   saveBackLink,
@@ -9,8 +10,10 @@ import {
 } from './dom-elements.js';
 import strings from '../strings.js';
 
+const background = chrome.extension.getBackgroundPage();
+
 function updateOptGroups() {
-  var optGroups = [cookiesOptGroup, webStorageOptGroup];
+  var optGroups = [cookiesOptGroup, requestHeadersOptGroup, webStorageOptGroup];
 
   optGroups.forEach(optGroup => {
     const hasJWTs = optGroup.querySelectorAll(':not(.load-from-no-jwts)')
@@ -31,7 +34,7 @@ function updateOptGroups() {
 }
 
 function messageHandler(message) {
-  if (message.type !== 'cookies' && message.type !== 'storage') {
+  if (message.type !== 'cookies' && message.type !== 'requestHeaders' && message.type !== 'storage') {
     return;
   }
 
@@ -69,10 +72,18 @@ function messageHandler(message) {
     elements.push(e);
   });
 
-  if (message.type === 'cookies') {
-    elements.forEach(e => cookiesOptGroup.appendChild(e));
-  } else {
-    elements.forEach(e => webStorageOptGroup.appendChild(e));
+  switch (message.type) {
+    case 'cookies':
+      elements.forEach(e => cookiesOptGroup.appendChild(e));
+      break;
+
+    case 'requestHeaders':
+      elements.forEach(e => requestHeadersOptGroup.appendChild(e));
+      break;
+
+    case 'storage':
+      elements.forEach(e => webStorageOptGroup.appendChild(e));
+      break;
   }
 
   updateOptGroups();
@@ -176,9 +187,38 @@ function setupInjectedCode() {
   });
 }
 
+function getTokensFromRequestHeaders() {
+  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    const tokens = Object.entries(background.tabsToSubdomainsToHeadersToToken[tabs[0].id])
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .reduce((tokens, [subdomain, headersToToken]) => {
+        return [
+          ...tokens,
+          ...Object.entries(headersToToken)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .reduce((tokens, [header, token]) => {
+              return [
+                ...tokens,
+                {
+                  name: `${subdomain}/${header}`,
+                  value: token
+                }
+              ];
+            }, [])
+        ];
+      }, []);
+
+    messageHandler({
+      type: 'requestHeaders',
+      tokens: tokens
+    });
+  });
+}
+
 export function setupTokenPageInspector() {
   setupInjectedCode();
   getCookies();
+  getTokensFromRequestHeaders();
   updateOptGroups();
   setupListeners();
 }

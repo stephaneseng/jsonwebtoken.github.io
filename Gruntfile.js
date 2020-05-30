@@ -48,7 +48,7 @@ module.exports = grunt => {
         files: [{
           expand: true,
           flatten: true,
-          src: ['manifest.json', 'html/extension/bg.html'],
+          src: ['manifest.json'],
           dest: 'dist/extension'
         }, {
           expand: true,
@@ -89,7 +89,7 @@ module.exports = grunt => {
                  '--overwrite-dest'
       },
       renameFirefoxExtension: {
-        command: `mv dist/jwt_debugger-${extensionManifest.version}.zip ` +
+        command: `mv dist/jwt_debugger_stephaneseng_-${extensionManifest.version}.zip ` +
                  'dist/firefox-jwt-debugger-extension-' +
                  `v${extensionManifest.version}.zip`
       }

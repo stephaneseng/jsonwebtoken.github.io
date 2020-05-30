@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "JWT Debugger",
+  "name": "JWT Debugger (StephaneSeng)",
   "description": "The JWT.io debugger as a Web Extension",
   "version": "3.1.0",
 
@@ -11,7 +11,9 @@
   },
 
   "background": {
-      "page": "bg.html"
+      "scripts": [
+        "js/background.js"
+      ]
   },
 
   "content_scripts": [{
@@ -45,6 +47,7 @@
     "cookies",
     "storage",
     "clipboardRead",
-    "clipboardWrite"
+    "clipboardWrite",
+    "webRequest"
   ]
 }

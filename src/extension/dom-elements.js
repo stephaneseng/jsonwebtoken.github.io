@@ -6,6 +6,8 @@ export const shareJwtTextElement =
 
 export const cookiesOptGroup =
   document.querySelector('optgroup[label="Cookies"]');
+export const requestHeadersOptGroup =
+  document.querySelector('optgroup[label="Request Headers"]');
 export const webStorageOptGroup =
   document.querySelector('optgroup[label="Web Storage"]');
 
